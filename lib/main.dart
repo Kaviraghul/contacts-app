@@ -1,4 +1,5 @@
 // ignore: depend_on_referenced_packages
+import 'package:contacts_app/view/screens/login/login_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const LoginView(),
     );
   }
 }

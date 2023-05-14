@@ -1,6 +1,8 @@
+import 'package:contacts_app/view/resources/appStrings.dart';
 import 'package:contacts_app/view/screens/authentication/login/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -36,67 +38,74 @@ class _LoginViewState extends State<LoginView> {
 
   Widget _loginScreen() {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login screen')),
-      body: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder<bool>(
-                    stream: _viewModel.outputIsUserEmailValid,
-                    builder: (context, snapshot) {
-                      return TextFormField(
-                        controller: _userEmailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
-                        ),
-                        onSaved: (value) {},
-                      );
-                    }),
+        child: Column(
+          children: [
+            Lottie.network(
+                'https://assets9.lottiefiles.com/packages/lf20_jcikwtux.json'),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: StreamBuilder<bool>(
+                        stream: _viewModel.outputIsUserEmailValid,
+                        builder: (context, snapshot) {
+                          return TextFormField(
+                            controller: _userEmailController,
+                            decoration: const InputDecoration(
+                              labelText: AppStrings.email,
+                              border: OutlineInputBorder(),
+                            ),
+                            onSaved: (value) {},
+                          );
+                        }),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: StreamBuilder<bool>(
+                        stream: _viewModel.outputIsUserPasswordValid,
+                        builder: (context, snapshot) {
+                          return TextFormField(
+                            controller: _userPasswordController,
+                            decoration: const InputDecoration(
+                              labelText: AppStrings.password,
+                              border: OutlineInputBorder(),
+                            ),
+                            onSaved: (value) {},
+                          );
+                        }),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: StreamBuilder<bool>(
+                      stream: _viewModel.outputIsAllInputsValid,
+                      builder: (context, snapshot) {
+                        final isValid = snapshot.data ?? false;
+                        return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              textStyle: const TextStyle(fontSize: 20),
+                              minimumSize: const Size(double.infinity, 60),
+                            ),
+                            onPressed: isValid
+                                ? () => _viewModel.login(context)
+                                : null,
+                            child: const Text(AppStrings.login));
+                      },
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder<bool>(
-                    stream: _viewModel.outputIsUserPasswordValid,
-                    builder: (context, snapshot) {
-                      return TextFormField(
-                        controller: _userPasswordController,
-                        decoration: InputDecoration(
-                          labelText: 'password',
-                          errorText: (snapshot.data ?? true)
-                              ? null
-                              : "password incorrect",
-                          border: const OutlineInputBorder(),
-                        ),
-                        onSaved: (value) {},
-                      );
-                    }),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder<bool>(
-                  stream: _viewModel.outputIsAllInputsValid,
-                  builder: (context, snapshot) {
-                    final isValid = snapshot.data ?? false;
-                    return ElevatedButton(
-                        onPressed:
-                            isValid ? () => _viewModel.login(context) : null,
-                        child: const Text("Login"));
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: Padding(
@@ -105,7 +114,7 @@ class _LoginViewState extends State<LoginView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Don't have an account?",
+                AppStrings.noAccount,
                 style: TextStyle(fontSize: 15),
               ),
               TextButton(
@@ -113,7 +122,7 @@ class _LoginViewState extends State<LoginView> {
                   textStyle: const TextStyle(fontSize: 15),
                 ),
                 onPressed: () => context.go("/userRegister"),
-                child: const Text('Sign up'),
+                child: const Text(AppStrings.signUp),
               ),
             ],
           )),

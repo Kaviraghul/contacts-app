@@ -6,7 +6,6 @@ import 'package:contacts_app/view/common/freezed_data_classes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginViewModel extends BaseViewModel
     with LoginViewModelInputs, LoginViewModelOutputs {
@@ -32,8 +31,6 @@ class LoginViewModel extends BaseViewModel
       if (user != null) {
         UserPreferences.setUserId(user.uid);
         UserPreferences.setLoggedIn(true);
-        print(UserPreferences.getUserId());
-        print(user);
         context.go('/contactsScreen');
         return user.uid;
       }

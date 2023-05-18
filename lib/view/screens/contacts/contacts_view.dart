@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_app/app/peferences/user_preferences.dart';
+import 'package:contacts_app/app/services/firebase_services.dart';
 import 'package:contacts_app/view/resources/appStrings.dart';
 import 'package:contacts_app/view/screens/contacts/contacts_view_model.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +35,7 @@ class _ContactsViewState extends State<ContactsView> {
 
   Widget _getContactsList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .doc(UserPreferences.getUserId())
-          .collection('contacts')
-          .snapshots(),
+      stream: FirebaseServices.readAllContacts(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();

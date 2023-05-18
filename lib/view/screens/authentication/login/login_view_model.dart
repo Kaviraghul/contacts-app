@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:contacts_app/app/peferences/user_preferences.dart';
-import 'package:contacts_app/app/services/firebase_auth.dart';
+import 'package:contacts_app/app/services/firebase_services.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +23,7 @@ class LoginViewModel extends BaseViewModel
   Future<String?> login(BuildContext context) async {
     try {
       Future<UserCredential> result =
-          Firebase.signIn(loginObject.email, loginObject.password);
+          FirebaseServices.signIn(loginObject.email, loginObject.password);
       UserCredential userCredential = await result;
       User? user = userCredential.user;
 

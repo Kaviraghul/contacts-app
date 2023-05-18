@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_app/app/peferences/user_preferences.dart';
+import 'package:contacts_app/app/services/firebase_services.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,6 @@ class ContactViewModel extends BaseViewModel
 
   /// --------------------------------------------------------------------------------------------------------------------------
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  String userId = UserPreferences.getUserId();
 
   @override
   void start() async {}
@@ -122,14 +122,7 @@ class ContactViewModel extends BaseViewModel
 
   @override
   void addNewContact(String contactName, String phoneNumber) async {
-    CollectionReference contactsCollection =
-        firestore.collection('users').doc(userId).collection('contacts');
-
-    await contactsCollection.add({
-      'id': phoneNumber,
-      'name': contactName,
-      'phoneNumber': phoneNumber,
-    });
+    FirebaseServices.addNewContact(phoneNumber, contactName);
   }
 
   @override
@@ -148,11 +141,7 @@ class ContactViewModel extends BaseViewModel
 
   @override
   read() async {
-    contactsStream = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('contacts')
-        .snapshots();
+    FirebaseServices.readAllContacts();
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:contacts_app/app/peferences/user_preferences.dart';
+import 'package:contacts_app/app/services/firebase_auth.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,22 +18,19 @@ class LoginViewModel extends BaseViewModel
       StreamController<bool>.broadcast();
 
   var loginObject = LoginObject(email: '', password: '');
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  static const String _keyUserId = 'user_id';
 
   @override
   Future<String?> login(BuildContext context) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: loginObject.email, password: loginObject.password);
-      User? user = result.user;
+      Future<UserCredential> result =
+          Firebase.signIn(loginObject.email, loginObject.password);
+      UserCredential userCredential = await result;
+      User? user = userCredential.user;
 
       if (user != null) {
         UserPreferences.setUserId(user.uid);
         UserPreferences.setLoggedIn(true);
         context.go('/contactsScreen');
-        return user.uid;
       }
     } catch (error) {
       print('Login failed. Error: $error');

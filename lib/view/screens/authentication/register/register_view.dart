@@ -79,12 +79,14 @@ class _RegisterViewState extends State<RegisterView> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
-                      fixedSize: const Size(250, 50),
+                      minimumSize: const Size(double.infinity, 60),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5))),
-                  child: const Text('Sign in'),
+                  child: const Text('Sign up'),
                   onPressed: () => _viewModel.register(
-                      _userEmailController.text, _userPasswordController.text),
+                      _userEmailController.text,
+                      _userPasswordController.text,
+                      context),
                 ),
               ),
             ],

@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_app/app/peferences/user_preferences.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ContactViewModel extends BaseViewModel
     with ContactViewModelInputs, ContactViewModelOutputs {
@@ -123,8 +125,6 @@ class ContactViewModel extends BaseViewModel
     CollectionReference contactsCollection =
         firestore.collection('users').doc(userId).collection('contacts');
 
-    print(userId);
-
     await contactsCollection.add({
       'id': phoneNumber,
       'name': contactName,
@@ -136,6 +136,12 @@ class ContactViewModel extends BaseViewModel
   delete() {
     // TODO: implement delete
     throw UnimplementedError();
+  }
+
+  @override
+  logout(BuildContext context) {
+    UserPreferences.setLoggedIn(false);
+    context.go('/');
   }
 
   late Stream<QuerySnapshot> contactsStream;
@@ -152,7 +158,6 @@ class ContactViewModel extends BaseViewModel
   @override
   Future<void> update(
       String documentId, String newName, String newPhoneNumber) async {
-    print(newName);
     try {
       await FirebaseFirestore.instance
           .collection("users")
@@ -175,6 +180,7 @@ abstract class ContactViewModelInputs {
   read();
   update(String documentId, String newName, String newPhoneNumber);
   delete();
+  logout(BuildContext context);
 
   setContactId(int id);
   setContactName(String name);

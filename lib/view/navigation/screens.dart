@@ -2,7 +2,6 @@ import 'package:contacts_app/app/peferences/user_preferences.dart';
 import 'package:contacts_app/view/screens/authentication/login/login_view.dart';
 import 'package:contacts_app/view/screens/authentication/register/register_view.dart';
 import 'package:contacts_app/view/screens/contacts/contacts_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,10 +34,5 @@ class Screens extends StatelessWidget {
 }
 
 String _getInitialRoute() {
-  print('csk will win');
-  if (UserPreferences.isLoggedIn()) {
-    return '/contactsScreen';
-  } else {
-    return '/';
-  }
+  return UserPreferences.isLoggedIn() ? '/contactsScreen' : '/';
 }

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterViewModel extends BaseViewModel
     with RegisterViewModelInputs, RegisterViewModelOutputs {
@@ -60,7 +62,7 @@ class RegisterViewModel extends BaseViewModel
   }
 
   @override
-  register(String email, String password) async {
+  register(String email, String password, BuildContext context) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -70,6 +72,7 @@ class RegisterViewModel extends BaseViewModel
       User? user = userCredential.user;
 
       print('User registered: ${user?.uid}');
+      context.go('/');
     } catch (e) {
       print('Registration failed: $e');
     }
@@ -129,7 +132,7 @@ abstract class RegisterViewModelInputs {
   setUserEmail(String email);
   setUserPassword(String password);
   setUserConfirmPassword(String confirmPassword);
-  register(String email, String password);
+  register(String email, String password, BuildContext context);
 
   Sink get inputUserEmail;
   Sink get inputUserPassword;

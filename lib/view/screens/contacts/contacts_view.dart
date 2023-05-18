@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_app/app/peferences/user_preferences.dart';
+import 'package:contacts_app/view/resources/appStrings.dart';
 import 'package:contacts_app/view/screens/contacts/contacts_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactsView extends StatefulWidget {
   const ContactsView({Key? key}) : super(key: key);
@@ -25,13 +25,9 @@ class _ContactsViewState extends State<ContactsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Contacts'),
-      ),
       body: _getContactsList(),
       bottomNavigationBar: MyBottomNavigationBar(
         onAddPressed: _showAddContactDialog,
-        onLogoutPresed: _showLogoutDialog,
       ),
     );
   }
@@ -40,7 +36,7 @@ class _ContactsViewState extends State<ContactsView> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('users')
-          .doc('vyVv55U8AjSO2GBYgzzeszp3aEx1')
+          .doc(UserPreferences.getUserId())
           .collection('contacts')
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -50,44 +46,57 @@ class _ContactsViewState extends State<ContactsView> {
           return Text('Error: ${snapshot.error}');
         }
         List<DocumentSnapshot> documents = snapshot.data!.docs;
-        return ListView(
-            children: documents
-                .map((DocumentSnapshot document) {
-                  Map<String, dynamic> data =
-                      document.data()! as Map<String, dynamic>;
-                  return Dismissible(
-                    background: Container(
-                      color: Colors.green,
-                    ),
-                    key: ValueKey<String>(data['id']),
-                    onDismissed: (DismissDirection direction) {
-                      String documentId = document.id;
-                      print(documentId);
-                      FirebaseFirestore.instance
-                          .collection("users")
-                          .doc('vyVv55U8AjSO2GBYgzzeszp3aEx1')
-                          .collection('contacts')
-                          .doc(documentId)
-                          .delete()
-                          .then(
-                            (doc) => print("Document deleted"),
-                            onError: (e) => print("Error updating document $e"),
-                          );
-                    },
-                    child: ListTile(
-                        title: Text(data['name']),
-                        subtitle: Text(data['phoneNumber']),
-                        trailing: IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            _showEditContactDialog(
-                                document.id, data['name'], data['phoneNumber']);
-                          },
-                        )),
-                  );
-                })
-                .toList()
-                .cast());
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ListView(
+              children: documents
+                  .map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      child: Dismissible(
+                        background: Container(
+                          color: Colors.green,
+                        ),
+                        key: ValueKey<String>(data['id']),
+                        onDismissed: (DismissDirection direction) {
+                          String documentId = document.id;
+                          print(documentId);
+                          FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(UserPreferences.getUserId())
+                              .collection('contacts')
+                              .doc(documentId)
+                              .delete()
+                              .then(
+                                (doc) => print("Document deleted"),
+                                onError: (e) =>
+                                    print("Error updating document $e"),
+                              );
+                        },
+                        child: ListTile(
+                            tileColor: Colors.black12,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            title: Text(data['name']),
+                            subtitle: Text(data['phoneNumber']),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                _showEditContactDialog(document.id,
+                                    data['name'], data['phoneNumber']);
+                              },
+                            )),
+                      ),
+                    );
+                  })
+                  .toList()
+                  .cast()),
+        );
       },
     );
   }
@@ -102,14 +111,14 @@ class _ContactsViewState extends State<ContactsView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Contact'),
+          title: const Text(AppStrings.editContacts),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Name',
+                  labelText: AppStrings.name,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -117,7 +126,7 @@ class _ContactsViewState extends State<ContactsView> {
               TextField(
                 controller: _phoneNumberController,
                 decoration: const InputDecoration(
-                  labelText: 'Phone Number',
+                  labelText: AppStrings.phoneNumber,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -133,13 +142,13 @@ class _ContactsViewState extends State<ContactsView> {
                 _viewModel.update(documentId, newName, newPhoneNumber);
                 Navigator.pop(context);
               },
-              child: Text('Update'),
+              child: const Text(AppStrings.update),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text(AppStrings.cancel),
             ),
           ],
         );
@@ -152,14 +161,14 @@ class _ContactsViewState extends State<ContactsView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Contact'),
+          title: const Text(AppStrings.add),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Name',
+                  labelText: AppStrings.name,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -167,7 +176,7 @@ class _ContactsViewState extends State<ContactsView> {
               TextField(
                 controller: _phoneNumberController,
                 decoration: const InputDecoration(
-                  labelText: 'Phone Number',
+                  labelText: AppStrings.phoneNumber,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -183,41 +192,18 @@ class _ContactsViewState extends State<ContactsView> {
                 _viewModel.addNewContact(name, phoneNumber);
                 Navigator.pop(context);
               },
-              child: const Text('Add'),
+              child: const Text(AppStrings.add),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child: const Text(AppStrings.cancel),
             ),
           ],
         );
       },
     );
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-              title: const Text('Logout'),
-              content: const Text('Are you sure you want to logout?'),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      UserPreferences.setLoggedIn(false);
-                      context.go('/');
-                    },
-                    child: const Text('Yes')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('No')),
-              ]);
-        });
   }
 
   @override
@@ -230,10 +216,8 @@ class _ContactsViewState extends State<ContactsView> {
 
 class MyBottomNavigationBar extends StatelessWidget {
   final VoidCallback onAddPressed;
-  final VoidCallback onLogoutPresed;
 
-  const MyBottomNavigationBar(
-      {Key? key, required this.onAddPressed, required this.onLogoutPresed})
+  const MyBottomNavigationBar({Key? key, required this.onAddPressed})
       : super(key: key);
 
   @override
@@ -242,15 +226,15 @@ class MyBottomNavigationBar extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: AppStrings.home,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: 'Add',
+          label: AppStrings.add,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.logout),
-          label: 'Logout',
+          label: AppStrings.logout,
         ),
       ],
       currentIndex: 0,
@@ -259,7 +243,10 @@ class MyBottomNavigationBar extends StatelessWidget {
         if (index == 1) {
           onAddPressed();
         } else if (index == 2) {
-          onLogoutPresed();
+          UserPreferences.setLoggedIn(false);
+          UserPreferences.setUserId('');
+          context.go('/');
+          // print(UserPreferences.getUserId());
         }
       },
     );

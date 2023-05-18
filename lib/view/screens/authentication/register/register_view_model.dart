@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:contacts_app/app/services/firebase_auth.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -64,14 +65,9 @@ class RegisterViewModel extends BaseViewModel
   @override
   register(String email, String password, BuildContext context) async {
     try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      Future<UserCredential> result = Firebase.signUp(email, password);
+      UserCredential userCredential = await result;
       User? user = userCredential.user;
-
-      print('User registered: ${user?.uid}');
       context.go('/');
     } catch (e) {
       print('Registration failed: $e');

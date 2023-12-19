@@ -1,8 +1,9 @@
 // ignore: depend_on_referenced_packages
 import 'package:contacts_app/app/peferences/user_preferences.dart';
-import 'package:contacts_app/view/navigation/screens.dart';
+import 'package:contacts_app/view/resources/router_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Screens(),
+      home: const DatesTrackerApp(),
+    );
+  }
+}
+
+class DatesTrackerApp extends StatelessWidget {
+  const DatesTrackerApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerConfig: RoutesManager().router,
+      title: 'Dates tracker app',
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:contacts_app/app/peferences/user_preferences.dart';
 import 'package:contacts_app/app/services/firebase_services.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
+import 'package:contacts_app/view/resources/router_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +31,7 @@ class LoginViewModel extends BaseViewModel
       if (user != null) {
         UserPreferences.setUserId(user.uid);
         UserPreferences.setLoggedIn(true);
-        context.go('/contactsScreen');
+        context.go(RouteNamesAndPath.homeScreenPath);
       }
     } catch (error) {
       print('Login failed. Error: $error');

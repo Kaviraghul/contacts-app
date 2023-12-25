@@ -15,26 +15,18 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const DatesTrackerApp(),
-    );
-  }
-}
-
-class DatesTrackerApp extends StatelessWidget {
-  const DatesTrackerApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: RoutesManager().router,
+      routeInformationParser: appRouter.routeInformationParser,
+      routeInformationProvider: appRouter.routeInformationProvider,
+      routerDelegate: appRouter.routerDelegate,
+      // routerConfig: appRouter,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
       title: 'Dates tracker app',
     );
   }

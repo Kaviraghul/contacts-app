@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:contacts_app/app/services/firebase_services.dart';
 import 'package:contacts_app/view/base/base_view_model.dart';
 import 'package:contacts_app/view/common/freezed_data_classes.dart';
+import 'package:contacts_app/view/resources/router_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -68,7 +69,7 @@ class RegisterViewModel extends BaseViewModel
       Future<UserCredential> result = FirebaseServices.signUp(email, password);
       UserCredential userCredential = await result;
       User? user = userCredential.user;
-      context.go('/');
+      context.go(RouteNamesAndPath.loginScreenPath);
     } catch (e) {
       print('Registration failed: $e');
     }
